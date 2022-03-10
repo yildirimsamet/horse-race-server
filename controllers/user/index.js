@@ -24,9 +24,18 @@ exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
         const [result] = await User.getUserByEmail(email);
-        if (result.length && result[0].password === password) {
+        if(result.length < 1) {
+            return res.json({ success: false, message: 'User not found!' });
+        }
+        else if (result.length && result[0].password === password) {
             const token = jwt.sign({ email: result[0].email, name: result[0].name, surname: result[0].surname }, process.env.JWT_SECRET);
-            res.status(200).json({ success: true, user: result[0], token });
+            const userInfo = result[0]
+            res.status(200).json({ success: true, user: {
+                name: userInfo.name,
+                surname: userInfo.surname,
+                email: userInfo.email,
+                coins: userInfo.coins,
+            }, token });
         } else {
             res.status(400).json({ success: false, message: 'Wrong email or password!' });
         }
