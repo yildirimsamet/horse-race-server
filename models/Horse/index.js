@@ -11,8 +11,9 @@ class Horse {
         this.weight = weight;
     }
 
-    static findUserHorses(userId) {
+    static getHorsesByUserId(userId) {
         const sql = `SELECT * FROM horse WHERE ownerId = ${userId}`;
+        
         return db.execute(sql);
     }
 }
