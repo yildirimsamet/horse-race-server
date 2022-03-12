@@ -8,6 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/user', require('./routers/user'));
+app.use('/horse', require('./routers/horse'));
 
 app.use((err, req, res, next) => {
   console.log(err.stack);

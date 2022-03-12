@@ -1,6 +1,6 @@
 require('dotenv').config();
 const User = require('../../models/User');
-const Horse = require('../../models/Horse');
+const {Horse} = require('../../models/Horse');
 const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res, next) => {

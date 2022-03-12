@@ -28,8 +28,14 @@ class User {
 
     }
 
-    static getUserByEmail(email) {
-        const sql = `SELECT * FROM user WHERE email = '${email}'`;
+    static getUserById(id) {
+        const sql = `SELECT * FROM user WHERE id = '${id}'`;
+
+        return db.execute(sql);
+    }
+    
+    static changeUserCoins({ userId, coins, operation }) {
+        const sql = `UPDATE user SET coins = coins ${operation} ${coins} WHERE id = '${userId}'`;
 
         return db.execute(sql);
     }
