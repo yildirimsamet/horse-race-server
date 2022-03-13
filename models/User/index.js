@@ -1,4 +1,5 @@
 const db = require('../../config/db');
+const bcrypt = require('bcryptjs');
 class User {
     constructor(email, password, name, surname) {
         this.email = email;
@@ -19,7 +20,8 @@ class User {
 
     async create() {
         if (await this.#isCreateAbleUser() == true) {
-            const sql = `INSERT INTO user (email, password, name, surname, coins) VALUES ('${this.email}', '${this.password}', '${this.name}', '${this.surname}', 5000)`;
+            var hashedPassword = bcrypt.hashSync(this.password, 8);
+            const sql = `INSERT INTO user (email, password, name, surname, coins) VALUES ('${this.email}', '${hashedPassword}', '${this.name}', '${this.surname}', 5000)`;
 
             return db.execute(sql);
         }
@@ -36,6 +38,11 @@ class User {
     
     static changeUserCoins({ userId, coins, operation }) {
         const sql = `UPDATE user SET coins = coins ${operation} ${coins} WHERE id = '${userId}'`;
+
+        return db.execute(sql);
+    }
+    static getUserByEmail(email) {
+        const sql = `SELECT * FROM user WHERE email = '${email}'`;
 
         return db.execute(sql);
     }
