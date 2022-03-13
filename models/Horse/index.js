@@ -20,6 +20,21 @@ class Horse {
 
     return db.execute(sql);
   }
+  static decreaseSatiety(number) {
+    const sql = `UPDATE horse SET satiety = satiety - ${number} WHERE satiety > 0`;
+
+    return db.execute(sql);
+  }
+  static increaseAge(){
+    const sql = `UPDATE horse SET age = age + 1 WHERE age < 10`;
+
+    return db.execute(sql);
+  }
+  static handleWeightAllHorses({number, operation}) {
+    const sql = `UPDATE horse SET weight = weight ${operation} ${number} WHERE weight > 0 AND weight < 1000 AND satiety < 50`;
+
+    return db.execute(sql);
+  }
 }
 
 class HorseLevelOne extends Horse {
