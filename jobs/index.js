@@ -2,7 +2,7 @@ const { Horse } = require("../models/Horse");
 const schedule = require("node-schedule");
 
 const handleHorseHunger = schedule.scheduleJob("0 */2 * * *", async () => {
-  // Every 2 hours run this job
+  // Every 2 hours run this job "0 */2 * * *"
   await Horse.decreaseSatiety(10);
   await Horse.handleWeightAllHorses({ number: 20, operation: "-" });
 });

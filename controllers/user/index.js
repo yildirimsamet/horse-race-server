@@ -10,12 +10,12 @@ exports.register = async (req, res, next) => {
     const [result] = await user.create();
 
     if (result) {
+      delete user.password;
+
       const token = jwt.sign(
         {
           id: result.insertId,
-          email: user.email,
-          name: user.name,
-          surname: user.surname,
+          ...user,
         },
         process.env.JWT_SECRET
       );
@@ -24,10 +24,7 @@ exports.register = async (req, res, next) => {
         success: true,
         user: {
           id: result.insertId,
-          email: user.email,
-          name: user.name,
-          surname: user.surname,
-          coins: 5000,
+          ...user,
         },
         token,
       });
