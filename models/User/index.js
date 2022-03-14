@@ -6,8 +6,6 @@ class User {
     this.password = password;
     this.name = name;
     this.surname = surname;
-    this.carrotCount = 0;
-    this.strawCount = 0;
     this.coins = 5000;
   }
 
@@ -24,7 +22,7 @@ class User {
   async create() {
     if ((await this.#isCreateAbleUser()) == true) {
       var hashedPassword = bcrypt.hashSync(this.password, 8);
-      const sql = `INSERT INTO user (email, password, name, surname, coins, strawCount, carrotCount) VALUES ('${this.email}', '${hashedPassword}', '${this.name}', '${this.surname}', ${this.coins}, ${this.strawCount}, ${this.carrotCount})`;
+      const sql = `INSERT INTO user (email, password, name, surname, coins) VALUES ('${this.email}', '${hashedPassword}', '${this.name}', '${this.surname}', ${this.coins})`;
 
       return db.execute(sql);
     }
@@ -43,24 +41,17 @@ class User {
 
     return db.execute(sql);
   }
+  
   static getUserByEmail(email) {
     const sql = `SELECT * FROM user WHERE email = '${email}'`;
 
     return db.execute(sql);
   }
-  static addItemToUser({ userId, itemName, quantity }) {
-    let pixelItem;
-    switch (itemName) {
-      case "Straw":
-        pixelItem = "strawCount";
-        break;
-      case "Carrot":
-        pixelItem = "carrotCount";
-        break;
-      default:
-        break;
-    }
-    const sql = `UPDATE user SET ${pixelItem} = ${pixelItem} + ${quantity} WHERE id = '${userId}'`;
+
+  static getUserItems(userId) {
+    const sql = `select pixel_shop_item.id, quantity, name from user_items 
+                  INNER JOIN pixel_shop_item ON user_items.itemId = pixel_shop_item.id 
+                  where ownerId = ${userId};`;
 
     return db.execute(sql);
   }

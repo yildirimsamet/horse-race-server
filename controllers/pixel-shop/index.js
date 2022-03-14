@@ -20,24 +20,43 @@ exports.buyItem = async (req, res, next) => {
   try {
     const { userId } = res.locals;
     const { itemId, quantity } = req.body;
-    const [[user]] = await User.getUserById(userId);
-    const [[item]] = await PixelShopItem.getItemById(itemId);
-    const isUserHasEnoughCoins = user.coins >= item.price * quantity;
 
-    if (quantity <= 0)
+    if (quantity <= 0) {
       return res.json({
         success: false,
         message: "Quantity must be greater than 0",
       });
-    if (isUserHasEnoughCoins) {
-      const costOfBuy = item.price * quantity;
+    }
 
-      await User.changeUserCoins({
+    const [[user]] = await User.getUserById(userId);
+    const [[item]] = await PixelShopItem.getItemById(itemId);
+
+    if (!item) {
+      return res.json({ success: false, message: "Item not found" });
+    }
+    const isUserHasEnoughCoins = user.coins >= item.price * quantity;
+
+    if (isUserHasEnoughCoins) {
+      const costOfBuyedItems = item.price * quantity;
+
+      const [result] = await PixelShopItem.buyItem({
         userId,
-        coins: costOfBuy,
-        operation: "-",
+        itemId,
+        quantity,
       });
-      await User.addItemToUser({ userId, itemName: item.name, quantity });
+
+      if (!result?.affectedRows) {
+        return res.json({
+          success: false,
+          message: "Something went wrong",
+        });
+      } else {
+        await User.changeUserCoins({
+          userId,
+          coins: costOfBuyedItems,
+          operation: "-",
+        });
+      }
 
       return res.json({
         success: true,

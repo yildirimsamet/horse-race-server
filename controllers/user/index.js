@@ -24,6 +24,7 @@ exports.register = async (req, res, next) => {
         success: true,
         user: {
           id: result.insertId,
+          items: [],
           ...user,
         },
         token,
@@ -65,6 +66,9 @@ exports.login = async (req, res, next) => {
 
       delete user.password;
 
+      const [userItems] = await User.getUserItems(user.id);
+      user.items = userItems || [];
+
       return res.status(200).json({
         success: true,
         user,
@@ -104,12 +108,17 @@ exports.getUserInfo = async (req, res, next) => {
     const token = req.headers.authorization;
     const { id } = jwt.decode(token);
     const [result] = await User.getUserById(id);
+    const [userItems] = await User.getUserItems(id);
+
     delete result[0].password;
 
     if (result && result.length > 0) {
+      const user = result[0];
+      user.items = userItems || [];
+
       return res.json({
         success: true,
-        user: result[0],
+        user,
       });
     } else {
       return res.json({
