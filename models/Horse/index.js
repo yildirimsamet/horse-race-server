@@ -16,7 +16,7 @@ class Horse {
     return db.execute(sql);
   }
   static addNewHorse(horse) {
-    const sql = `INSERT INTO horse (ownerId, name, color, age, satiety, fatRatio, level, experience, weight ) VALUES (${horse.ownerId}, '${horse.name}', '${horse.color}', ${horse.age}, ${horse.satiety}, ${horse.fatRatio}, ${horse.level}, ${horse.experience}, ${horse.weight})`;
+    const sql = `INSERT INTO horse (ownerId, name, color, age, satiety, fatRatio, level, experience, weight, title ) VALUES (${horse.ownerId}, '${horse.name}', '${horse.color}', ${horse.age}, ${horse.satiety}, ${horse.fatRatio}, ${horse.level}, ${horse.experience}, ${horse.weight}, '${horse.title}')`;
 
     return db.execute(sql);
   }
@@ -25,12 +25,12 @@ class Horse {
 
     return db.execute(sql);
   }
-  static increaseAge(){
+  static increaseAge() {
     const sql = `UPDATE horse SET age = age + 1 WHERE age < 10`;
 
     return db.execute(sql);
   }
-  static handleWeightAllHorses({number, operation}) {
+  static handleWeightAllHorses({ number, operation }) {
     const sql = `UPDATE horse SET weight = weight ${operation} ${number} WHERE weight > 0 AND weight < 1000 AND satiety < 50`;
 
     return db.execute(sql);
@@ -40,6 +40,7 @@ class Horse {
 class HorseLevelOne extends Horse {
   constructor({ ownerId }) {
     super({ ownerId });
+    this.title = "Common";
     this.color = generateRandomHexColor();
     this.age = getRandomNumberInRange(1, 10);
     this.satiety = getRandomNumberInRange(0, 50);
@@ -52,6 +53,7 @@ class HorseLevelOne extends Horse {
 class HorseLevelTwo extends Horse {
   constructor({ ownerId }) {
     super({ ownerId });
+    this.title = "Rare";
     this.color = generateRandomHexColor();
     this.age = getRandomNumberInRange(3, 8);
     this.satiety = getRandomNumberInRange(30, 80);
@@ -64,6 +66,7 @@ class HorseLevelTwo extends Horse {
 class HorseLevelThree extends Horse {
   constructor({ ownerId }) {
     super({ ownerId });
+    this.title = "Legendary";
     this.color = generateRandomHexColor();
     this.age = getRandomNumberInRange(4, 6);
     this.satiety = getRandomNumberInRange(70, 100);

@@ -41,7 +41,7 @@ class User {
 
     return db.execute(sql);
   }
-  
+
   static getUserByEmail(email) {
     const sql = `SELECT * FROM user WHERE email = '${email}'`;
 
@@ -49,9 +49,8 @@ class User {
   }
 
   static getUserItems(userId) {
-    const sql = `select pixel_shop_item.id, quantity, name from user_items 
-                  INNER JOIN pixel_shop_item ON user_items.itemId = pixel_shop_item.id 
-                  where ownerId = ${userId};`;
+    const sql = `select pixel_shop_item.id, pixel_shop_item.energy, pixel_shop_item.price, quantity, name from user_items 
+                  INNER JOIN pixel_shop_item ON user_items.itemId = pixel_shop_item.id where ownerId = ${userId};`;
 
     return db.execute(sql);
   }
