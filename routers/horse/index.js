@@ -7,4 +7,6 @@ router.use('/get-horse-chests', horseController.getHorseChests);
 
 router.use('/buy-horse-chest',authMiddleware , horseController.buyHorseChest);
 
+router.use('/feed-horse',authMiddleware , horseController.feedHorse);
+
 module.exports = router;

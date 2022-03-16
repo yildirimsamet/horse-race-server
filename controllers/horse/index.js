@@ -1,6 +1,8 @@
 const HorseChest = require("../../models/HorseChest");
-
+const { Horse } = require("../../models/Horse");
+const User = require("../../models/User");
 const jwt = require("jsonwebtoken");
+
 exports.getHorseChests = async (req, res, next) => {
   try {
     const [horseChests] = await HorseChest.getHorseChests();
@@ -26,7 +28,7 @@ exports.buyHorseChest = async (req, res, next) => {
   const { id } = jwt.decode(token);
   const { chestLevel } = req.body;
   const buyedHorseData = await HorseChest.buyHorseChest(id, chestLevel);
-  
+
   if (buyedHorseData) {
     return res.json({
       success: true,
@@ -38,4 +40,46 @@ exports.buyHorseChest = async (req, res, next) => {
     success: false,
     message: "Couldn't buy horse chest!",
   });
+};
+
+exports.feedHorse = async (req, res, next) => {
+  const { userId } = res.locals;
+  const { foodId, foodQuantity, horseId } = req.body;
+
+  const [[isUserHasThatHorse]] = await Horse.getHorsesByUserId(userId);
+  if (!isUserHasThatHorse)
+    return res.json({ success: false, message: "You don't have that horse!" });
+
+  const [[userFood]] = await User.getUserItemById({
+    userId,
+    itemId: foodId,
+  });
+
+  if (!userFood)
+    return res.json({ success: false, message: "You don't have that food!" });
+
+  if (userFood.quantity < foodQuantity)
+    return res.json({
+      success: false,
+      message: "You don't have that much food!",
+    });
+
+  const [result] = await Horse.feedHorseById({
+    horseId,
+    energy: foodQuantity * userFood.energy,
+  });
+  if (result.affectedRows <= 0)
+    return res.json({
+      success: false,
+      message: "You don't have that much food!",
+    });
+
+  await User.updateUserItemQuantity({
+    userId,
+    itemId: foodId,
+    quantity: foodQuantity,
+    operation: "-",
+  });
+
+  return res.json({ success: true, message: "Horse satiety increased!" });
 };

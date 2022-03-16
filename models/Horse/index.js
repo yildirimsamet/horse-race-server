@@ -35,6 +35,11 @@ class Horse {
 
     return db.execute(sql);
   }
+  static feedHorseById({ horseId, energy }) {
+    const sql = `UPDATE horse SET satiety = satiety + ${energy} WHERE id = ${horseId}`;
+
+    return db.execute(sql);
+  }
 }
 
 class HorseLevelOne extends Horse {
