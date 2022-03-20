@@ -40,6 +40,21 @@ class Horse {
 
     return db.execute(sql);
   }
+  static setHorseIsOnMarketById({ horseId, isOnMarket }) {
+    const sql = `UPDATE horse SET isOnMarket = ${isOnMarket} WHERE id = ${horseId}`;
+
+    return db.execute(sql);
+  }
+  static getHorseById(horseId) {
+    const sql = `SELECT * FROM horse WHERE id = ${horseId}`;
+
+    return db.execute(sql);
+  }
+  static changeUserOwner({horseId, newOwnerId}) {
+    const sql = `UPDATE horse SET ownerId = ${newOwnerId} WHERE id = ${horseId}`;
+
+    return db.execute(sql);
+  }
 }
 
 class HorseLevelOne extends Horse {

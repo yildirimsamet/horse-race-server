@@ -89,7 +89,7 @@ exports.getHorses = async (req, res) => {
   const token = req.headers.authorization;
   const { id } = jwt.decode(token);
   const [result] = await Horse.getHorsesByUserId(id);
-
+  
   if (result && result.length > 0) {
     return res.json({
       success: true,

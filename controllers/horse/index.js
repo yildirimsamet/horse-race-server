@@ -2,6 +2,7 @@ const HorseChest = require("../../models/HorseChest");
 const { Horse } = require("../../models/Horse");
 const User = require("../../models/User");
 const jwt = require("jsonwebtoken");
+const HorseMarket = require("../../models/HorseMarket");
 
 exports.getHorseChests = async (req, res, next) => {
   try {
@@ -82,4 +83,52 @@ exports.feedHorse = async (req, res, next) => {
   });
 
   return res.json({ success: true, message: "Horse satiety increased!" });
+};
+
+exports.sellHorse = async (req, res, next) => {
+  try {
+    const { userId } = res.locals;
+    const { horseId, price } = req.body;
+
+    if (!price || price <= 0 || !horseId)
+      return res.json({ success: false, message: "Invalid data!" });
+
+    const [usersHorses] = await Horse.getHorsesByUserId(userId);
+
+    const isUserHaveThatHorse = usersHorses.find(
+      (horse) => horse?.id === horseId
+    );
+    if (!isUserHaveThatHorse)
+      return res.json({
+        success: false,
+        message: "You don't have that horse!",
+      });
+
+    const [[isHorseAlreadyOnMarket]] = await HorseMarket.getMarketItemByHorseId(
+      { horseId }
+    );
+    if (isHorseAlreadyOnMarket)
+      return res.json({
+        success: false,
+        message: "Horse is already on market!",
+      });
+
+    const [successfullyOnMarket] = await new HorseMarket({
+      userId,
+      horseId,
+      price,
+    }).createMarketItem();
+    if (successfullyOnMarket?.insertId) {
+      await Horse.setHorseIsOnMarketById({ horseId, isOnMarket: true });
+
+      return res.json({
+        success: true,
+        message: "Horse successfully on market!",
+      });
+    }
+
+    return res.send("hello");
+  } catch (error) {
+    next(error);
+  }
 };
