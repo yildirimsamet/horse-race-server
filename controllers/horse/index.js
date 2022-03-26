@@ -95,15 +95,15 @@ exports.sellHorse = async (req, res, next) => {
 
     const [usersHorses] = await Horse.getHorsesByUserId(userId);
 
-    const isUserHaveThatHorse = usersHorses.find(
+    const wantToSellHorse = usersHorses.find(
       (horse) => horse?.id === horseId
     );
-    if (!isUserHaveThatHorse)
+    if (!wantToSellHorse)
       return res.json({
         success: false,
         message: "You don't have that horse!",
       });
-
+    if(wantToSellHorse.isOnRace) return res.json({success:false, message: "Your horse in on a race" })
     const [[isHorseAlreadyOnMarket]] = await HorseMarket.getMarketItemByHorseId(
       { horseId }
     );

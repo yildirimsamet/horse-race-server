@@ -89,7 +89,7 @@ exports.getHorses = async (req, res) => {
   const token = req.headers.authorization;
   const { id } = jwt.decode(token);
   const [result] = await Horse.getHorsesByUserId(id);
-  
+
   if (result && result.length > 0) {
     return res.json({
       success: true,
@@ -126,6 +126,19 @@ exports.getUserInfo = async (req, res, next) => {
         message: "No user found!",
       });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getHorsesForRace = async (req, res, next) => {
+  try {
+    const { userId } = res.locals;
+    const [horses] = await Horse.getUsersHorsesForRace(userId);
+    if (!horses || horses.length <= 0)
+      return res.json({ success: false, message: "No horses found!" });
+
+    return res.json({ success: true, horses });
   } catch (error) {
     next(error);
   }

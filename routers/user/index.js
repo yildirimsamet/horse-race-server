@@ -11,4 +11,6 @@ router.use("/get-user-info", authMiddleware, userController.getUserInfo);
 
 router.use("/get-horses", authMiddleware, userController.getHorses);
 
+router.use("/get-horses-for-race", authMiddleware, userController.getHorsesForRace);
+
 module.exports = router;
