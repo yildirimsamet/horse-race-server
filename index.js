@@ -3,15 +3,16 @@ const app = express();
 const cors = require("cors");
 require("./jobs");
 const PORT = process.env.PORT || 5000;
-const schedule = require("node-schedule");
 
 app.use(cors());
 
-app.use(express.json());
+app.use(express.json())
 
 app.use("/user", require("./routers/user"));
 app.use("/horse", require("./routers/horse"));
+app.use("/horse-market", require("./routers/horse-market"));
 app.use("/pixel-shop", require("./routers/pixel-shop"));
+app.use("/races", require('./routers/races'))
 
 app.use((err, req, res, next) => {
   console.log(err.stack);

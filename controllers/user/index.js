@@ -130,3 +130,16 @@ exports.getUserInfo = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getHorsesForRace = async (req, res, next) => {
+  try {
+    const { userId } = res.locals;
+    const [horses] = await Horse.getUsersHorsesForRace(userId);
+    if (!horses || horses.length <= 0)
+      return res.json({ success: false, message: "No horses found!" });
+
+    return res.json({ success: true, horses });
+  } catch (error) {
+    next(error);
+  }
+};
