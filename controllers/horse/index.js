@@ -81,7 +81,7 @@ exports.feedHorse = async (req, res, next) => {
     quantity: foodQuantity,
     operation: "-",
   });
-
+ 
   return res.json({ success: true, message: "Horse satiety increased!" });
 };
 

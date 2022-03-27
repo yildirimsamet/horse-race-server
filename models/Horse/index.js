@@ -3,11 +3,12 @@ const {
   getRandomNumberInRange,
   generateRandomHexColor,
 } = require("../../utils/general");
+const { getRandomHorseName } = require("../../utils/getRandomHorseName");
 
 class Horse {
   constructor({ ownerId }) {
     this.ownerId = ownerId;
-    this.name = "User " + ownerId + " Horse " + new Date().getTime();
+    this.name = getRandomHorseName();
   }
 
   static getHorsesByUserId(userId) {
@@ -55,7 +56,7 @@ class Horse {
 
     return db.execute(sql);
   }
-  static changeUserOwner({horseId, newOwnerId}) {
+  static changeUserOwner({ horseId, newOwnerId }) {
     const sql = `UPDATE horse SET ownerId = ${newOwnerId} WHERE id = ${horseId}`;
 
     return db.execute(sql);
@@ -65,7 +66,16 @@ class Horse {
 
     return db.execute(sql);
   }
+  static changeExperience({ horseId, experience, operation }) {
+    const sql = `UPDATE horse SET experience = experience ${operation} ${experience} WHERE id = ${horseId}`;
 
+    return db.execute(sql);
+  }
+  static giveExperience({ horseIdList, experience }) {
+    const sql = `UPDATE horse SET experience = experience + ${experience} WHERE id IN (${horseIdList})`;
+
+    return db.execute(sql);
+  }
 }
 
 class HorseLevelOne extends Horse {
@@ -77,7 +87,7 @@ class HorseLevelOne extends Horse {
     this.satiety = getRandomNumberInRange(0, 50);
     this.fatRatio = getRandomNumberInRange(10, 20);
     this.level = 1;
-    this.experience = getRandomNumberInRange(100, 900);
+    this.experience = 0;
     this.weight = getRandomNumberInRange(700, 1000);
   }
 }
@@ -90,20 +100,20 @@ class HorseLevelTwo extends Horse {
     this.satiety = getRandomNumberInRange(30, 80);
     this.fatRatio = getRandomNumberInRange(8, 12);
     this.level = 2;
-    this.experience = getRandomNumberInRange(100, 900);
+    this.experience = 0;
     this.weight = getRandomNumberInRange(500, 700);
   }
 }
 class HorseLevelThree extends Horse {
   constructor({ ownerId }) {
     super({ ownerId });
-    this.title = "Legendary";
+    this.title = "Epic";
     this.color = generateRandomHexColor();
     this.age = getRandomNumberInRange(4, 6);
     this.satiety = getRandomNumberInRange(70, 100);
     this.fatRatio = getRandomNumberInRange(6, 9);
     this.level = 3;
-    this.experience = getRandomNumberInRange(100, 900);
+    this.experience = 0;
     this.weight = getRandomNumberInRange(400, 500);
   }
 }

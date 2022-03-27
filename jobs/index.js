@@ -62,6 +62,10 @@ const createRace = schedule.scheduleJob("*/15 * * * *", async () => {
           coins: resultUsers[index].winPrice || 0,
           operation: "+",
         });
+        await Horse.giveExperience({
+          horseIdList: sortedHorses.map((horse) => horse.id),
+          experience: 100,
+        })
       }
       await Race.chageStatuById({ raceId: finishedRace.id, statu: 1 });
     } else {

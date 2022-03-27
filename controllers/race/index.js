@@ -20,7 +20,6 @@ exports.getRaces = async (req, res, next) => {
         race.users.push(user);
       }
     }
-    console.log(races);
     return res.json({ success: true, races });
   } catch (error) {
     next(error);

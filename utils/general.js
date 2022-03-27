@@ -44,60 +44,60 @@ exports.calculateResults = ({horses,users,totalPrice}) =>{
         min: 1,
         optimal: 4,
         max: 10,
-        minMs: 2000,
-        maxMs: 3000,
+        minMs: 2500,
+        maxMs: 3500,
       }),
       randomizePercentage: 5,
     });
-    // console.log(speed);
+    
     speed += randomizeNumber({
       number: calculateMs({
         value: horse.satiety,
         min: 0,
         optimal: 80,
         max: 100,
-        minMs: 2000,
+        minMs: 2500,
         maxMs: 3000,
       }),
-      randomizePercentage: 10,
+      randomizePercentage: 15,
     });
-    // console.log(speed);
+    
     speed += randomizeNumber({
       number: calculateMs({
         value: horse.level,
         min: 1,
         optimal: 3,
         max: 4,
-        minMs: 2000,
+        minMs: 2500,
         maxMs: 3000,
       }),
-      randomizePercentage: 10,
+      randomizePercentage: 15,
     });
-    // console.log(speed);
+    
     speed += randomizeNumber({
       number: calculateMs({
         value: horse.weight,
         min: 300,
         optimal: 300,
         max: 1000,
-        minMs: 2000,
+        minMs: 2500,
         maxMs: 3000,
       }),
-      randomizePercentage: 10,
+      randomizePercentage: 15,
     });
-    // console.log(speed);
+    
     speed += randomizeNumber({
       number: calculateMs({
         value: horse.fatRatio,
         min: 1,
         optimal: 4,
         max: 20,
-        minMs: 2000,
+        minMs: 2500,
         maxMs: 3000,
       }),
-      randomizePercentage: 10,
+      randomizePercentage: 15,
     });
-    // console.log(speed);
+    
 
     horse.speed = speed;
     return horse;
