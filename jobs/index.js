@@ -41,6 +41,7 @@ const createRace = schedule.scheduleJob("*/15 * * * *", async () => {
         users,
         totalPrice: finishedRace.price * finishedRace.currentCount,
       });
+
       for (const index in sortedHorses) {
         await new Result({
           raceId: finishedRace.id,

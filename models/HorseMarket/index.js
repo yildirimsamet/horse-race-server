@@ -13,12 +13,13 @@ class HorseMarket {
     return db.execute(sql);
   }
   static removeMarketItem(marketId) {
-    const sql = `DELETE FROM horse_sell WHERE id = ${marketId};`;
+    const sql = `DELETE FROM horse_sell WHERE id = ?;`;
 
-    return db.execute(sql);
+    return db.execute(sql, [marketId]);
   }
   static async getMarketItems() {
     const [marketItems] = await db.execute(`select * from horse_sell;`);
+
     if (marketItems.length < 0) return [];
     for (const item of marketItems) {
       const [[[horse]], [[user]]] = await Promise.all([
@@ -34,14 +35,14 @@ class HorseMarket {
     return [marketItems];
   }
   static getMarketItemByHorseId({ horseId }) {
-    const sql = `SELECT * FROM horse_sell WHERE horseId = ${horseId};`;
+    const sql = `SELECT * FROM horse_sell WHERE horseId = ?;`;
 
-    return db.execute(sql);
+    return db.execute(sql, [horseId]);
   }
   static getMarketItemById(marketId) {
-    const sql = `SELECT * FROM horse_sell WHERE id = ${marketId};`;
+    const sql = `SELECT * FROM horse_sell WHERE id = ?;`;
 
-    return db.execute(sql);
+    return db.execute(sql, [marketId]);
   }
 }
 module.exports = HorseMarket;

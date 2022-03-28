@@ -9,14 +9,14 @@ class Result {
         this.winPrice = winPrice;
     }
     create () {
-        const sql = `INSERT INTO results(raceId,horseId,userId,speed,finishedAt,winPrice) values(${this.raceId},${this.horseId},${this.userId},${this.speed},${this.finishedAt},${this.winPrice})`
+        const sql = `INSERT INTO results(raceId,horseId,userId,speed,finishedAt,winPrice) values(?, ?, ?, ?, ?, ?);`;
 
-        return db.execute(sql)
+        return db.execute(sql, [this.raceId, this.horseId, this.userId, this.speed, this.finishedAt, this.winPrice]);
     }
     static getResultsByRaceId (raceId) {
-        const sql = `select * from results where raceId = ${raceId} order by horseId`;
+        const sql = `select * from results where raceId = ? order by horseId;`;
 
-        return db.execute(sql);
+        return db.execute(sql, [raceId]);
     }
 }
 module.exports = Result;

@@ -6,29 +6,29 @@ class Participant {
         this.userId = userId;
     }
     create () {
-        const sql = `INSERT INTO participants(raceId, horseId, userId) values(${this.raceId}, ${this.horseId}, ${this.userId})`;
+        const sql = `INSERT INTO participants(raceId, horseId, userId) values(?, ?, ?);`;
 
-        return db.execute(sql)
+        return db.execute(sql, [this.raceId, this.horseId, this.userId]);
     }
     static getParticipants({raceId}) {
-        const sql = `select * from participants where raceId = ${raceId}`;
+        const sql = `select * from participants where raceId = ?;`;
         
-        return db.execute(sql)
+        return db.execute(sql, [raceId])
     };
     static getParticipantById ({raceId, userId}) {
-        const sql = `select * from participants where raceId = ${raceId} and userId = ${userId}`;
+        const sql = `select * from participants where raceId = ? and userId = ?;`;
         
-        return db.execute(sql)
+        return db.execute(sql, [raceId, userId])
     }
     static getParticipantByUserIdAndRaceId ({userId, raceId}) {
-        const sql = `select * from participants where userId = ${userId} and raceId = ${raceId}`;
+        const sql = `select * from participants where userId = ? and raceId = ?;`;
         
-        return db.execute(sql)
+        return db.execute(sql,[userId, raceId])
     }
     static removeParticipant ({raceId, userId}) {
-        const sql = `delete from participants where raceId = ${raceId} and userId = ${userId}`;
+        const sql = `delete from participants where raceId = ? and userId = ?;`;
         
-        return db.execute(sql)
+        return db.execute(sql, [raceId, userId])
     }
 }
 module.exports = Participant;

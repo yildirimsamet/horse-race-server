@@ -10,19 +10,19 @@ class PixelShopItem {
     return db.execute(sql);
   }
   static getItemById(id) {
-    const sql = `SELECT * FROM pixel_shop_item WHERE id = ${id}`;
-    return db.execute(sql);
+    const sql = `SELECT * FROM pixel_shop_item WHERE id = ?;`;
+    return db.execute(sql, [id]);
   }
   static async buyItem({ userId, itemId, quantity }) {
-    const sql = `select * from user_items where ownerId = ${userId} AND itemId = ${itemId};`;
-    const [[isUserHaveItem]] = await db.execute(sql);
+    const sql = `select * from user_items where ownerId = ? AND itemId = ?;`;
+    const [[isUserHaveItem]] = await db.execute(sql,[userId,itemId]);
 
     if (isUserHaveItem) {
-      const sql = `UPDATE user_items SET quantity = quantity + ${quantity} WHERE ownerId = ${userId} AND itemId = ${itemId};`;
-      return db.execute(sql);
+      const sql = `UPDATE user_items SET quantity = quantity + ? WHERE ownerId = ? AND itemId = ?;`;
+      return db.execute(sql,[quantity,userId,itemId]);
     } else {
-      const sql = `INSERT INTO user_items (ownerId, itemId, quantity) VALUES (${userId}, ${itemId}, ${quantity});`;
-      return db.execute(sql);
+      const sql = `INSERT INTO user_items (ownerId, itemId, quantity) VALUES (?, ?, ?);`;
+      return db.execute(sql,[userId,itemId,quantity]);
     }
   }
 }

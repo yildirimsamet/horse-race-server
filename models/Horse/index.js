@@ -12,69 +12,82 @@ class Horse {
   }
 
   static getHorsesByUserId(userId) {
-    const sql = `SELECT * FROM horse WHERE ownerId = ${userId}`;
+    const sql = "SELECT * FROM horse WHERE ownerId = ?;";
 
-    return db.execute(sql);
+    return db.execute(sql, [userId]);
   }
   static addNewHorse(horse) {
-    const sql = `INSERT INTO horse (ownerId, name, color, age, satiety, fatRatio, level, experience, weight, title ) VALUES (${horse.ownerId}, '${horse.name}', '${horse.color}', ${horse.age}, ${horse.satiety}, ${horse.fatRatio}, ${horse.level}, ${horse.experience}, ${horse.weight}, '${horse.title}')`;
+    const sql = `INSERT INTO horse (ownerId, name, color, age, satiety, fatRatio, level, experience, weight, title ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
-    return db.execute(sql);
+    return db.execute(sql, [
+      horse.ownerId,
+      horse.name,
+      horse.color,
+      horse.age,
+      horse.satiety,
+      horse.fatRatio,
+      horse.level,
+      horse.experience,
+      horse.weight,
+      horse.title,
+    ]);
   }
   static decreaseSatiety(number) {
-    const sql = `UPDATE horse SET satiety = satiety - ${number} WHERE satiety > 0`;
+    const sql = `UPDATE horse SET satiety = satiety - ? WHERE satiety > 0;`;
 
-    return db.execute(sql);
+    return db.execute(sql, [number]);
   }
   static increaseAge() {
-    const sql = `UPDATE horse SET age = age + 1 WHERE age < 10`;
+    const sql = `UPDATE horse SET age = age + 1 WHERE age < 10;`;
 
     return db.execute(sql);
   }
   static handleWeightAllHorses({ number, operation }) {
-    const sql = `UPDATE horse SET weight = weight ${operation} ${number} WHERE weight > 0 AND weight < 1000 AND satiety < 50`;
+    const sql = `UPDATE horse SET weight = weight ${operation} ? WHERE weight > 0 AND weight < 1000 AND satiety < 50;`;
 
-    return db.execute(sql);
+    return db.execute(sql, [number]);
   }
   static feedHorseById({ horseId, energy }) {
-    const sql = `UPDATE horse SET satiety = satiety + ${energy}, weight = weight + ${energy} WHERE id = ${horseId}`;
+    const sql =
+      "UPDATE horse SET satiety = satiety + ?, weight = weight + ? WHERE id = ?;";
 
-    return db.execute(sql);
+    return db.execute(sql, [energy, energy, horseId]);
   }
   static setHorseIsOnMarketById({ horseId, isOnMarket }) {
-    const sql = `UPDATE horse SET isOnMarket = ${isOnMarket} WHERE id = ${horseId}`;
+    const sql = "UPDATE horse SET isOnMarket = ? WHERE id = ?;";
 
-    return db.execute(sql);
+    return db.execute(sql, [isOnMarket, horseId]);
   }
   static setHorseIsOnRaceById({ horseId, isOnRace }) {
-    const sql = `UPDATE horse SET isOnRace = ${isOnRace} WHERE id = ${horseId}`;
+    const sql = "UPDATE horse SET isOnRace = ? WHERE id = ?;";
 
-    return db.execute(sql);
+    return db.execute(sql, [isOnRace, horseId]);
   }
   static getHorseById(horseId) {
-    const sql = `SELECT * FROM horse WHERE id = ${horseId}`;
+    const sql = "SELECT * FROM horse WHERE id = ?;";
 
-    return db.execute(sql);
+    return db.execute(sql, [horseId]);
   }
   static changeUserOwner({ horseId, newOwnerId }) {
-    const sql = `UPDATE horse SET ownerId = ${newOwnerId} WHERE id = ${horseId}`;
+    const sql = "UPDATE horse SET ownerId = ? WHERE id = ?;";
 
-    return db.execute(sql);
+    return db.execute(sql, [newOwnerId, horseId]);
   }
   static getUsersHorsesForRace(userId) {
-    const sql = `SELECT * FROM horse WHERE ownerId = ${userId} AND isOnRace = 0 AND isOnMarket = 0`;
+    const sql =
+      "SELECT * FROM horse WHERE ownerId = ? AND isOnRace = 0 AND isOnMarket = 0";
 
-    return db.execute(sql);
+    return db.execute(sql, [userId]);
   }
   static changeExperience({ horseId, experience, operation }) {
-    const sql = `UPDATE horse SET experience = experience ${operation} ${experience} WHERE id = ${horseId}`;
+    const sql = `UPDATE horse SET experience = experience ${operation} ? WHERE id = ?;`;
 
-    return db.execute(sql);
+    return db.execute(sql, [experience, horseId]);
   }
   static giveExperience({ horseIdList, experience }) {
-    const sql = `UPDATE horse SET experience = experience + ${experience} WHERE id IN (${horseIdList})`;
+    const sql = `UPDATE horse SET experience = experience + ? WHERE id IN (${horseIdList});`;
 
-    return db.execute(sql);
+    return db.execute(sql, [experience]);
   }
 }
 

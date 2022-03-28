@@ -36,7 +36,7 @@ exports.cancelSell = async (req, res, next) => {
     await Horse.setHorseIsOnMarketById({
       horseId: marketItem.horseId,
       isOnMarket: false,
-    })
+    });
     const [isDeleted] = await HorseMarket.removeMarketItem(marketId);
     if (isDeleted.affectedRows > 0) {
       return res.json({ success: true, message: "Market item deleted!" });
@@ -101,7 +101,10 @@ exports.buyHorse = async (req, res, next) => {
       horseId: marketItem.horseId,
       newOwnerId: userId,
     });
-
+    await Horse.setHorseIsOnMarketById({
+      horseId: marketItem.horseId,
+      isOnMarket: false,
+    });
     await HorseMarket.removeMarketItem(marketId);
 
     return res.json({ success: true, message: "Horse succesfully buyed!" });
