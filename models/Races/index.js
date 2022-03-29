@@ -34,7 +34,7 @@ class Race {
         return db.execute(sql,[statu, raceId]);
     }
     static findNotCalcutaledFinishedRaces () {
-        const sql = "SELECT * FROM races WHERE statu = 0 AND startTime < NOW() + INTERVAL 3 HOUR + INTERVAL 15.5 MINUTE;"; 
+        const sql = "SELECT * FROM races WHERE statu = 0 AND startTime < NOW() + INTERVAL 15.5 MINUTE;"; 
 
         return db.execute(sql);
     }
