@@ -108,6 +108,9 @@ exports.getUserInfo = async (req, res, next) => {
     const token = req.headers.authorization;
     const { id } = jwt.decode(token);
     const [result] = await User.getUserById(id);
+    if (result.length <= 0)
+      return res.json({ success: false, message: "User not found!" });
+
     const [userItems] = await User.getUserItems(id);
 
     delete result[0].password;
