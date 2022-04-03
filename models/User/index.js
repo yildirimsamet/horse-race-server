@@ -24,7 +24,7 @@ class User {
 
     const hashedPassword = bcrypt.hashSync(this.password, 8);
     const sql = `INSERT INTO user (email, password, name, surname, coins) VALUES (?, ?, ?, ?, ?);`;
-    const user = await db.execute(sql, [
+    const [user] = await db.execute(sql, [
       this.email,
       hashedPassword,
       this.name,
