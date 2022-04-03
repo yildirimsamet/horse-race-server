@@ -25,10 +25,9 @@ exports.getHorseChests = async (req, res, next) => {
 };
 
 exports.buyHorseChest = async (req, res, next) => {
-  const token = req.headers.authorization;
-  const { id } = jwt.decode(token);
+  const {userId} = res.locals;
   const { chestLevel } = req.body;
-  const buyedHorseData = await HorseChest.buyHorseChest(id, chestLevel);
+  const buyedHorseData = await HorseChest.buyHorseChest(userId, chestLevel);
 
   if (buyedHorseData) {
     return res.json({
@@ -81,7 +80,7 @@ exports.feedHorse = async (req, res, next) => {
     quantity: foodQuantity,
     operation: "-",
   });
- 
+
   return res.json({ success: true, message: "Horse satiety increased!" });
 };
 
@@ -95,15 +94,14 @@ exports.sellHorse = async (req, res, next) => {
 
     const [usersHorses] = await Horse.getHorsesByUserId(userId);
 
-    const wantToSellHorse = usersHorses.find(
-      (horse) => horse?.id === horseId
-    );
+    const wantToSellHorse = usersHorses.find((horse) => horse?.id === horseId);
     if (!wantToSellHorse)
       return res.json({
         success: false,
         message: "You don't have that horse!",
       });
-    if(wantToSellHorse.isOnRace) return res.json({success:false, message: "Your horse in on a race" })
+    if (wantToSellHorse.isOnRace)
+      return res.json({ success: false, message: "Your horse in on a race" });
     const [[isHorseAlreadyOnMarket]] = await HorseMarket.getMarketItemByHorseId(
       { horseId }
     );
