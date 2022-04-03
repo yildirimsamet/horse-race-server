@@ -9,31 +9,35 @@ class User {
     this.coins = 5000;
   }
 
-  async #isCreateAbleUser() {
-    if (!this.email || !this.password || !this.name || !this.surname) {
-      return false;
-    } else if (!!(await User.getUserByEmail(this.email))[0].length) {
-      return false;
-    }
-
-    return true;
-  }
-
   async create() {
-    if ((await this.#isCreateAbleUser()) == true) {
-      var hashedPassword = bcrypt.hashSync(this.password, 8);
-      const sql = `INSERT INTO user (email, password, name, surname, coins) VALUES (?, ?, ?, ?, ?);`;
+    const [[isUserExists]] = await User.getUserByEmail(this.email);
 
-      return db.execute(sql, [
-        this.email,
-        hashedPassword,
-        this.name,
-        this.surname,
-        this.coins,
-      ]);
+    if (isUserExists) {
+      return [{ success: false, message: "User already exists!" }];
     }
 
-    return [];
+    const isAnyFieldEmpty =
+      !this.email || !this.password || !this.name || !this.surname;
+    if (isAnyFieldEmpty) {
+      return [{ success: false, message: "Fields required!" }];
+    }
+
+    const hashedPassword = bcrypt.hashSync(this.password, 8);
+    const sql = `INSERT INTO user (email, password, name, surname, coins) VALUES (?, ?, ?, ?, ?);`;
+    const user = await db.execute(sql, [
+      this.email,
+      hashedPassword,
+      this.name,
+      this.surname,
+      this.coins,
+    ]);
+
+    return [
+      {
+        success: true,
+        user,
+      },
+    ];
   }
 
   static getUserById(id) {

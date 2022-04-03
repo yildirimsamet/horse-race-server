@@ -7,14 +7,20 @@ exports.register = async (req, res, next) => {
   try {
     const { email, password, name, surname } = req.body;
     const user = new User(email, password, name, surname);
+
     const [result] = await user.create();
 
-    if (result) {
+    if (!result.success) {
+      return res.json({
+        success: false,
+        message: result.message || "User already exists!",
+      });
+    } else {
       delete user.password;
 
       const token = jwt.sign(
         {
-          id: result.insertId,
+          id: result.user.insertId,
           ...user,
         },
         process.env.JWT_SECRET
@@ -23,18 +29,13 @@ exports.register = async (req, res, next) => {
       return res.status(200).json({
         success: true,
         user: {
-          id: result.insertId,
+          id: result.user.insertId,
           items: [],
           ...user,
         },
         token,
       });
     }
-
-    return res.json({
-      success: false,
-      message: "Couldn't create user!",
-    });
   } catch (error) {
     next(error);
   }
